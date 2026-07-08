@@ -2,18 +2,21 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Hello from GitHub Pipeline!'
+                checkout scm
             }
         }
 
-        stage('System Info') {
+        stage('Build Docker Image') {
             steps {
-                sh 'date'
-                sh 'hostname'
-                sh 'pwd'
-                sh 'whoami'
+                sh 'docker build -t my-demo-app .'
+            }
+        }
+
+        stage('List Images') {
+            steps {
+                sh 'docker images'
             }
         }
     }

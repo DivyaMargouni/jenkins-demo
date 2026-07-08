@@ -2,21 +2,40 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Image') {
             steps {
-                sh 'docker build -t my-demo-app .'
+                sh 'docker build -t my-demo-app:latest .'
             }
         }
 
-        stage('List Images') {
+        stage('Tag Image') {
             steps {
-                sh 'docker images'
+                sh 'docker tag my-demo-app:latest divyamaragouni/jenkins-demo:latest'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub',
+                                                 usernameVariable: 'USER',
+                                                 passwordVariable: 'PASS')]) {
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push divyamaragouni/jenkins-demo:latest'
             }
         }
     }

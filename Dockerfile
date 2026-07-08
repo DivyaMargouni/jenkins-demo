@@ -1,5 +1,5 @@
-FROM ubuntu:22.04
+FROM nginx:latest
 
-RUN apt-get update
+RUN echo "Hello from Jenkins Docker Deployment!" > /usr/share/nginx/html/index.html
 
-CMD ["echo","Hello from Docker!"]
+EXPOSE 80
